@@ -38,3 +38,138 @@ SISTEM TARAMASI BASLATILDI
 [2026-05-17 17:44:48] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
 [2026-05-17 17:44:48] [INFO] Device: RTR-MAIN-01 - Network traffic normal
 [2026-05-17 17:44:48] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:19] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:19] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+[2026-05-17 17:50:19] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected in restricted zone
+[2026-05-17 17:50:19] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:19] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:19] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:50:19] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+[2026-05-17 17:50:19] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:29] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:29] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected in restricted zone
+[2026-05-17 17:50:29] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+[2026-05-17 17:50:29] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:29] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+[2026-05-17 17:50:29] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:29] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:50:29] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:30] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:30] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:50:30] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected in restricted zone
+[2026-05-17 17:50:30] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:30] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:30] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:50:30] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:50:30] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:31] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected in restricted zone
+[2026-05-17 17:50:31] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:31] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+[2026-05-17 17:50:31] [INFO] Device: LCK-DOOR-01 - Lock secure
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:50:31] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:50:31] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:50:31] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:50:31] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:51:33] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:51:33] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:51:33] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:51:33] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected.
+[2026-05-17 17:51:33] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts! Brute force.
+[2026-05-17 17:51:33] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:51:33] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:56:36] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:56:36] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected.
+[2026-05-17 17:56:36] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:56:36] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+[2026-05-17 18:02:25] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 18:02:25] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 18:02:25] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected.
+[2026-05-17 18:02:25] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+[2026-05-17 18:07:44] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts! Brute force.
+[2026-05-17 18:07:44] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected.
+[2026-05-17 18:07:44] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected
+[2026-05-17 18:07:44] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+[2026-05-17 18:10:11] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected.
+[2026-05-17 18:10:11] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+[2026-05-17 18:10:11] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 18:10:11] [CRITICAL] Device: CAM-FRONT-01 - Unauthorized motion detected
