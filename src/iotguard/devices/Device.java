@@ -33,8 +33,8 @@ public abstract class Device implements Monitorable {
         this.status = status;
     }
 
-    // Abstract method to be implemented by all specific devices
-    public abstract void performSelfDiagnostic();
+    // Abstract method to be implemented by all specific devices, throw exception if hardware fails
+    public abstract void performSelfDiagnostic() throws iotguard.events.DeviceFailureException;
 
     @Override
     public void reportEvent(SecurityEvent event) {

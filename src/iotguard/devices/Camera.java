@@ -17,8 +17,12 @@ public class Camera extends Device {
     }
 
     @Override
-    public void performSelfDiagnostic() {
+    public void performSelfDiagnostic() throws iotguard.events.DeviceFailureException {
         System.out.println("[DIAGNOSTIC] Camera " + getDeviceId() + " checking lens and recording status...");
+        Random rand = new Random();
+        if (rand.nextInt(100) < 5) { // %5 ihtimalle donanım hatası
+            throw new iotguard.events.DeviceFailureException("Kamera lensi yanit vermiyor!", getDeviceId());
+        }
         if (!isRecording) {
             reportEvent(new SecurityEvent("EVT-CAM-01", "Camera stopped recording unexpectedly", EventSeverity.HIGH, getDeviceId()));
         }

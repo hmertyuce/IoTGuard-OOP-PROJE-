@@ -17,8 +17,12 @@ public class SmartLock extends Device {
     }
 
     @Override
-    public void performSelfDiagnostic() {
+    public void performSelfDiagnostic() throws iotguard.events.DeviceFailureException {
         System.out.println("[DIAGNOSTIC] SmartLock " + getDeviceId() + " checking mechanical integrity...");
+        Random rand = new Random();
+        if (rand.nextInt(100) < 5) {
+            throw new iotguard.events.DeviceFailureException("Akill kilit motoru sikisti!", getDeviceId());
+        }
         if (!isLocked) {
             reportEvent(new SecurityEvent("EVT-LCK-01", "Lock is in open state during security scan", EventSeverity.WARNING, getDeviceId()));
         }

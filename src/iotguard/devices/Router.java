@@ -17,8 +17,12 @@ public class Router extends Device {
     }
 
     @Override
-    public void performSelfDiagnostic() {
+    public void performSelfDiagnostic() throws iotguard.events.DeviceFailureException {
         System.out.println("[DIAGNOSTIC] Router " + getDeviceId() + " checking firmware and connections...");
+        Random rand = new Random();
+        if (rand.nextInt(100) < 5) {
+            throw new iotguard.events.DeviceFailureException("Router ag karti arizasi!", getDeviceId());
+        }
         if (firmwareVersion.equals("v1.0.0")) {
             reportEvent(new SecurityEvent("EVT-RTR-01", "Outdated firmware detected. Vulnerable to exploits.", EventSeverity.WARNING, getDeviceId()));
         }
