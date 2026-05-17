@@ -230,7 +230,8 @@ public:
         : Device(id, ip, m), resolution(res), isRecording(true) {}
 
     void performSelfDiagnostic() override {
-        std::cout << "[DIAGNOSTIC] Camera " << getDeviceId() << " checking lens and recording status...\n";
+        std::string msg = "[DIAGNOSTIC] Camera " + getDeviceId() + " checking lens and recording status...\n";
+        std::cout << msg;
         if (getRandom(100) < 5) throw DeviceFailureException("Kamera lensi yanit vermiyor!", getDeviceId());
         if (!isRecording) reportEvent(SecurityEvent("EVT-CAM-01", "Camera stopped recording", EventSeverity::HIGH, getDeviceId()));
     }
@@ -249,7 +250,8 @@ public:
         : Device(id, ip, m), firmwareVersion(fw) {}
 
     void performSelfDiagnostic() override {
-        std::cout << "[DIAGNOSTIC] Router " << getDeviceId() << " checking firmware and connections...\n";
+        std::string msg = "[DIAGNOSTIC] Router " + getDeviceId() + " checking firmware and connections...\n";
+        std::cout << msg;
         std::random_device rd; std::mt19937 gen(rd()); std::uniform_int_distribution<> distrib(0, 100);
         if (distrib(gen) < 5) throw DeviceFailureException("Router ag karti arizasi!", getDeviceId());
         
@@ -269,7 +271,8 @@ public:
         : Device(id, ip, m), isLocked(true) {}
 
     void performSelfDiagnostic() override {
-        std::cout << "[DIAGNOSTIC] SmartLock " << getDeviceId() << " checking mechanical integrity...\n";
+        std::string msg = "[DIAGNOSTIC] SmartLock " + getDeviceId() + " checking mechanical integrity...\n";
+        std::cout << msg;
         std::random_device rd; std::mt19937 gen(rd()); std::uniform_int_distribution<> distrib(0, 100);
         if (distrib(gen) < 5) throw DeviceFailureException("Akill kilit motoru sikisti!", getDeviceId());
     }
