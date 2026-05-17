@@ -1,35 +1,25 @@
-# IoTGuard - Gömülü Cihaz Güvenlik Monitörü
+# IoTGuard - Gömülü Cihaz Güvenlik Monitörü (C++ Versiyonu)
 
-Bu projeyi **Nesne Yönelimli Programlama (OOP)** dersi ödevim için geliştirdim. Projem, bir akıllı ev veya iş yeri ağındaki farklı IoT (Nesnelerin İnterneti) cihazlarını takip eden, bu cihazlara güvenlik taramaları yaptıran ve olası siber tehditleri tespit ederek raporlayan Java tabanlı bir simülasyondur.
+Bu projeyi **Nesne Yönelimli Programlama (OOP)** dersi ödevim için geliştirdim. Projem, bir akıllı ev veya iş yeri ağındaki farklı IoT cihazlarını takip eden, bu cihazlara güvenlik taramaları yaptıran ve olası siber tehditleri tespit ederek raporlayan **C++** tabanlı bir simülasyondur.
 
 ## İleri Düzey Mühendislik Özellikleri (A+)
-Bu projeyi standart bir ödevden ayırmak için ileri düzey Java özelliklerini entegre ettim:
-1. **Çoklu İş Parçacığı (Multi-threading):** Ağ üzerindeki tüm cihazların taranması sırayla değil, modern sistemlerdeki gibi *aynı anda* (Thread'ler kullanarak asenkron) yapılmaktadır.
-2. **Dosya Okuma/Yazma (File I/O):** Loglar sadece konsola yazılmaz. `LogManager` sınıfı üzerinden `security_logs.txt` dosyasına otomatik olarak kaydedilir.
-3. **Özel Hata Yönetimi (Custom Exception Handling):** Donanımsal arızaları temsil etmek için kendi özel `DeviceFailureException` sınıfımı yazdım. Çalışma anında bir donanım çökerse, program `try-catch` blokları sayesinde hatayı yakalar ve sistem çökmeden çalışmaya devam eder.
+Bu projeyi standart bir ödevden ayırmak için C++11/C++17 standartlarını entegre ettim:
+1. **Çoklu İş Parçacığı (Multi-threading):** Ağ üzerindeki tüm cihazların taranması `<thread>` kütüphanesi ile *aynı anda* yapılmaktadır. `std::mutex` ve `std::lock_guard` kullanılarak veri yarışması (data race) önlenmiştir.
+2. **Dosya Okuma/Yazma (File I/O):** Loglar `security_logs.txt` dosyasına `<fstream>` kütüphanesi kullanılarak kalıcı olarak kaydedilir.
+3. **Özel Hata Yönetimi (Custom Exception Handling):** Donanımsal arızaları temsil etmek için `std::exception` sınıfından türeyen kendi `DeviceFailureException` sınıfımı yazdım.
+4. **Header / Source Ayrımı:** Profesyonel C++ standartlarına uygun olarak sınıfların yapısı `.h` dosyalarında, uygulanması `.cpp` dosyalarında tutulmuştur.
 
 ## Projede Kullandığım Temel OOP Prensipleri
-1. **Kalıtım (Inheritance):** Sistemdeki cihaz tiplerini (`Camera`, `Router`, `SmartLock`) kodlarken ortak özellikleri barındıran temel bir `Device` (Cihaz) üst sınıfı oluşturdum ve diğer cihazları bu sınıftan türettim.
-2. **Çok Biçimlilik (Polymorphism):** Merkezi kontrol sistemimde (`SecurityMonitor.java`), farklı türdeki cihazları tek tek ayırmak yerine hepsini `Device` referansıyla bir listede tuttum.
-3. **Soyutlama (Abstraction):** `Device` sınıfını `abstract` olarak tasarladım ve `performSelfDiagnostic()` metodunu soyut bıraktım. 
-4. **Arayüzler (Interfaces):** Cihazların merkeze olay bildirebilmesi için `Monitorable` isimli bir arayüz tanımladım.
+1. **Kalıtım (Inheritance):** `Camera`, `Router`, `SmartLock` sınıflarını `Device` (Cihaz) üst sınıfından türettim.
+2. **Çok Biçimlilik (Polymorphism):** Merkezi kontrol sistemimde (`SecurityMonitor.h`), farklı türdeki cihazları `std::vector<Device*>` içinde tuttum. Sanal (virtual) metotlar ile dinamik dispatch sağladım.
+3. **Soyutlama (Abstraction):** `Device` sınıfını içindeki `virtual void performSelfDiagnostic() = 0;` saf sanal fonksiyonu (pure virtual) ile soyut sınıfa (abstract class) dönüştürdüm.
+4. **Arayüzler (Interfaces):** `Monitorable` sınıfı tamamen saf sanal fonksiyonlardan oluşur ve Java'daki Interface mantığını C++'a taşır.
 
-## Proje Yapısı
-```
-src/
-└── iotguard/
-    ├── core/
-    │   ├── Monitorable.java     # Arayüz
-    │   ├── SecurityMonitor.java # Olayları yöneten (Thread-safe) ana sistem
-    │   └── LogManager.java      # Dosyaya log yazan (File I/O) yönetici
-    ├── devices/
-    │   ├── Device.java          # Soyut cihaz sınıfım
-    │   ├── Camera.java          
-    │   ├── Router.java          
-    │   └── SmartLock.java       
-    ├── events/
-    │   ├── EventSeverity.java   
-    │   ├── SecurityEvent.java   
-    │   └── DeviceFailureException.java # Özel hata fırlatıcı sınıfım
-    └── Main.java                
+## Nasıl Derlenir ve Çalıştırılır?
+Windows üzerinde MingW (g++) yüklüyse, klasörün içindeki `build.bat` dosyasına çift tıklayarak otomatik derleyip çalıştırabilirsiniz.
+
+Alternatif Komut:
+```bash
+g++ -std=c++17 src/main.cpp src/Device.cpp -o IoTGuard.exe
+./IoTGuard.exe
 ```
