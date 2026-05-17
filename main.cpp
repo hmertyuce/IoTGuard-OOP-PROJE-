@@ -312,5 +312,8 @@ int main() {
     std::cout << "     System Shutdown Successfully        \n";
     std::cout << "=========================================\n";
 
+    // Konsolun aniden kapanmasını engellemek için eklendi
+    system("pause");
+
     return 0;
 }
