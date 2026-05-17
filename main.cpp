@@ -285,14 +285,45 @@ public:
 };
 
 // =========================================================================
-// 6. ANA PROGRAM (Main Entry)
+// 6. ANA PROGRAM (INTERAKTIF KONSOL ARAYÜZÜ - TUI)
 // =========================================================================
 
-int main() {
-    std::cout << "=========================================\n";
-    std::cout << "     IoTGuard - Security Monitor        \n";
-    std::cout << "=========================================\n\n";
+#include <conio.h>
+#include <windows.h>
 
+// ANSI Renk Kodları (Hacker Teması)
+const std::string RESET = "\033[0m";
+const std::string GREEN = "\033[32m";
+const std::string RED = "\033[31m";
+const std::string YELLOW = "\033[33m";
+const std::string CYAN = "\033[36m";
+
+// Windows'ta ANSI renklerini aktif etme fonksiyonu
+void enableANSI() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return;
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode)) return;
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+
+void printASCII() {
+    std::cout << CYAN;
+    std::cout << "  ___  ______ _____ _____                     _ \n";
+    std::cout << " |_  ||_   _|  __ \\  __ \\                   | |\n";
+    std::cout << "   | |  | | | |  \\/ |  \\/_   _  __ _ _ __ __| |\n";
+    std::cout << "   | |  | | | | __| | __| | | |/ _` | '__/ _` |\n";
+    std::cout << "   | | _| |_| |_\\ \\ |_\\ \\ |_| | (_| | | | (_| |\n";
+    std::cout << "   \\_/ \\___/ \\____/\\____/\\__,_|\\__,_|_|  \\__,_|\n";
+    std::cout << RESET;
+    std::cout << "====================================================\n";
+    std::cout << " Gömülü Cihaz Güvenlik Monitörü [v2.0 - C++ Edit.]\n";
+    std::cout << "====================================================\n\n";
+}
+
+int main() {
+    enableANSI();
     SecurityMonitor centralMonitor;
 
     Camera frontCamera("CAM-FRONT-01", "192.168.1.10", "1080p", &centralMonitor);
@@ -303,20 +334,62 @@ int main() {
     centralMonitor.registerDevice(&mainRouter);
     centralMonitor.registerDevice(&frontDoorLock);
 
-    std::cout << "\n[SIMULATION] Starting normal daily scan...\n";
-    centralMonitor.runFullSystemScan();
-    
-    std::cout << "\n[SIMULATION] Simulating later in the day...\n";
-    centralMonitor.runFullSystemScan();
+    bool isRunning = true;
 
-    centralMonitor.displayAllEvents();
-    
-    std::cout << "\n=========================================\n";
-    std::cout << "     System Shutdown Successfully        \n";
-    std::cout << "=========================================\n";
+    while (isRunning) {
+        system("cls"); // Ekranı temizle
+        printASCII();
+        std::cout << GREEN << " [1] " << RESET << "Sistemi Tara (Multi-Threaded)\n";
+        std::cout << GREEN << " [2] " << RESET << "Cihaz Loglarini Goster\n";
+        std::cout << GREEN << " [3] " << RESET << "Gorsel Simulasyon (Matrix Modu)\n";
+        std::cout << RED   << " [4] " << RESET << "Sistemi Kapat (Cikis)\n";
+        std::cout << "\n Lutfen bir islem secin (1-4): ";
 
-    // Konsolun aniden kapanmasını engellemek için eklendi
-    system("pause");
+        char choice = _getch(); // Kullanıcı enter'a basmadan tuşu algıla
+
+        switch (choice) {
+            case '1': {
+                system("cls");
+                printASCII();
+                std::cout << YELLOW << "\n [UYARI] Tum cihazlar eszamanli (Multi-Thread) taranmaya basliyor...\n\n" << RESET;
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                
+                centralMonitor.runFullSystemScan();
+                
+                std::cout << CYAN << "\n Islem tamamlandi. Ana menuye donmek icin herhangi bir tusa basin..." << RESET;
+                _getch();
+                break;
+            }
+            case '2': {
+                system("cls");
+                printASCII();
+                centralMonitor.displayAllEvents();
+                std::cout << CYAN << "\n Ana menuye donmek icin herhangi bir tusa basin..." << RESET;
+                _getch();
+                break;
+            }
+            case '3': {
+                system("cls");
+                std::cout << GREEN;
+                for(int i=0; i<100; i++) {
+                    std::cout << "01001001 01001111 01010100 01000111 01010101 01000001 01010010 01000100 ";
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                }
+                std::cout << RESET;
+                std::cout << "\n\n Simulasyon tamamlandi. Geri donmek icin tusa basin...";
+                _getch();
+                break;
+            }
+            case '4': {
+                isRunning = false;
+                std::cout << RED << "\n Sistem Kapatiliyor...\n" << RESET;
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                break;
+            }
+            default:
+                break; // Gecersiz tusa basildiysa menuye geri don
+        }
+    }
 
     return 0;
 }
