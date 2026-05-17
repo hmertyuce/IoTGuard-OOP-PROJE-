@@ -1,10 +1,10 @@
 /**
- * IoTGuard - Gömülü Cihaz Güvenlik Monitörü (C++ Versiyonu)
+ * IoTGuard - Gomulu Cihaz Guvenlik Monitoru (C++ Versiyonu)
  * Yazar: Hayati Mert
  * 
- * Bu proje, Nesne Yönelimli Programlama (OOP) dersi için özel olarak hazırlanmıştır.
- * Karmaşıklığı önlemek amacıyla tüm proje "Tek Dosya (Single-File)" mimarisinde birleştirilmiştir.
- * Kodlar yukarıdan aşağıya; Enumlar -> Arayüzler -> Sınıflar -> Ana Program şeklinde sıralanmıştır.
+ * Bu proje, Nesne Yonelimli Programlama (OOP) dersi icin ozel olarak hazirlanmistir.
+ * Karmasikligi onlemek amaciyla tum proje "Tek Dosya (Single-File)" mimarisinde birlestirilmistir.
+ * Kodlar yukaridan asagiya; Enumlar -> Arayuzler -> Siniflar -> Ana Program seklinde siralanmistir.
  */
 
 #include <iostream>
@@ -16,6 +16,25 @@
 #include <mutex>
 #include <random>
 #include <exception>
+#include <conio.h>
+#include <windows.h>
+
+// ANSI Renk Kodları (Hacker Teması)
+const std::string RESET = "\033[0m";
+const std::string GREEN = "\033[32m";
+const std::string RED = "\033[31m";
+const std::string YELLOW = "\033[33m";
+const std::string CYAN = "\033[36m";
+
+// Windows'ta ANSI renklerini aktif etme fonksiyonu
+void enableANSI() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return;
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode)) return;
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
 
 // =========================================================================
 // 1. ÇEKİRDEK YAPILAR (Enums & Exceptions)
@@ -82,10 +101,9 @@ public:
     }
 };
 
-// Dosyaya yazdırma işlemlerini yöneten sınıf (File I/O)
 class LogManager {
 private:
-    inline static std::mutex logMutex; // Multi-thread çakışmasını engellemek için Mutex
+    inline static std::mutex logMutex;
     inline static const std::string LOG_FILE = "security_logs.txt";
 public:
     static void saveLogToFile(const SecurityEvent& event) {
@@ -106,7 +124,6 @@ public:
 // 3. OOP ARAYÜZLERİ VE TEMEL SINIFLAR (Interfaces & Abstract Classes)
 // =========================================================================
 
-// C++'ta Interface (Saf Sanal Sınıf)
 class Monitorable {
 public:
     virtual ~Monitorable() = default;
@@ -114,10 +131,8 @@ public:
     virtual void reportEvent(const SecurityEvent& event) = 0;
 };
 
-// İleri bildirim
 class SecurityMonitor;
 
-// C++'ta Abstract Class (Soyut Sınıf)
 class Device : public Monitorable {
 private:
     std::string deviceId;
@@ -135,7 +150,7 @@ public:
     std::string getIpAddress() const { return ipAddress; }
     std::string getStatus() const { return status; }
 
-    virtual void performSelfDiagnostic() = 0; // Pure Virtual Method
+    virtual void performSelfDiagnostic() = 0;
     void reportEvent(const SecurityEvent& event) override; 
 };
 
@@ -148,6 +163,7 @@ private:
     std::vector<Device*> registeredDevices;
     std::vector<SecurityEvent> eventLog;
     std::mutex monitorMutex;
+    std::mutex printMutex; // Konsol ciktilarini duzenlemek icin
 
 public:
     SecurityMonitor() {
@@ -156,7 +172,7 @@ public:
 
     void registerDevice(Device* device) {
         registeredDevices.push_back(device);
-        std::cout << "Cihaz sisteme eklendi: " << device->getDeviceId() << "\n";
+        std::cout << " Cihaz sisteme eklendi: " << device->getDeviceId() << "\n";
     }
 
     void receiveEvent(const SecurityEvent& event) {
@@ -165,46 +181,53 @@ public:
         LogManager::saveLogToFile(event);
         
         if (event.getSeverity() == EventSeverity::CRITICAL) {
-            std::cerr << ">>> ACIL DURUM: " << event.toString() << "\n";
+            std::cerr << RED << " >>> ACIL DURUM: " << event.toString() << RESET << "\n";
+        } else if (event.getSeverity() == EventSeverity::WARNING) {
+            std::cout << YELLOW << " Log Kaydedildi: " << event.toString() << RESET << "\n";
         } else {
-            std::cout << "Log Kaydedildi: " << event.toString() << "\n";
+            std::cout << " Log Kaydedildi: " << event.toString() << "\n";
         }
     }
 
     void runFullSystemScan() {
-        std::cout << "\n--- Sistem Guvenlik Taramasi Baslatiliyor (Multi-Threaded) ---\n";
-        LogManager::writeSystemHeader("SISTEM TARAMASI BASLATILDI");
-        
         std::vector<std::thread> threads;
 
         for (Device* device : registeredDevices) {
-            // Lambda ile her cihaz için yeni bir iş parçacığı oluştur
             threads.emplace_back([this, device]() {
                 try {
                     device->performSelfDiagnostic();
                 } catch (const DeviceFailureException& e) {
                     std::lock_guard<std::mutex> lock(monitorMutex);
-                    std::cerr << " " << e.what() << "\n";
+                    std::cerr << RED << " " << e.what() << RESET << "\n";
                 }
                 device->scanForThreats();
             });
         }
 
-        // Tüm iş parçacıklarının bitmesini bekle
         for (auto& t : threads) {
             if (t.joinable()) t.join();
         }
-        
-        std::cout << "--- Sistem Taramasi Tamamlandi ---\n\n";
     }
 
     void displayAllEvents() {
-        std::cout << "\n--- Merkezi Olay Gunlugu (" << eventLog.size() << " kayit) ---\n";
-        std::cout << "Not: Tum loglar ayni zamanda 'security_logs.txt' dosyasina yazilmistir.\n";
+        std::cout << CYAN << "\n --- Merkezi Olay Gunlugu (" << eventLog.size() << " kayit) ---\n\n" << RESET;
+        if(eventLog.empty()) {
+            std::cout << " Henuz kaydedilmis bir olay bulunmamaktadir.\n";
+        } else {
+            for(const auto& ev : eventLog) {
+                if (ev.getSeverity() == EventSeverity::CRITICAL) {
+                    std::cout << RED << " " << ev.toString() << RESET << "\n";
+                } else if (ev.getSeverity() == EventSeverity::WARNING) {
+                    std::cout << YELLOW << " " << ev.toString() << RESET << "\n";
+                } else {
+                    std::cout << GREEN << " " << ev.toString() << RESET << "\n";
+                }
+            }
+        }
+        std::cout << "\n Not: Tum loglar 'security_logs.txt' dosyasina da yazilmistir.\n";
     }
 };
 
-// Arayüz metodu tanımlaması (Circular Dependency çözümü)
 inline void Device::reportEvent(const SecurityEvent& event) {
     if (monitor != nullptr) {
         monitor->receiveEvent(event);
@@ -230,7 +253,7 @@ public:
         : Device(id, ip, m), resolution(res), isRecording(true) {}
 
     void performSelfDiagnostic() override {
-        std::string msg = "[DIAGNOSTIC] Camera " + getDeviceId() + " checking lens and recording status...\n";
+        std::string msg = " [DIAGNOSTIC] Camera " + getDeviceId() + " checking lens...\n";
         std::cout << msg;
         if (getRandom(100) < 5) throw DeviceFailureException("Kamera lensi yanit vermiyor!", getDeviceId());
         if (!isRecording) reportEvent(SecurityEvent("EVT-CAM-01", "Camera stopped recording", EventSeverity::HIGH, getDeviceId()));
@@ -250,11 +273,10 @@ public:
         : Device(id, ip, m), firmwareVersion(fw) {}
 
     void performSelfDiagnostic() override {
-        std::string msg = "[DIAGNOSTIC] Router " + getDeviceId() + " checking firmware and connections...\n";
+        std::string msg = " [DIAGNOSTIC] Router " + getDeviceId() + " checking firmware...\n";
         std::cout << msg;
         std::random_device rd; std::mt19937 gen(rd()); std::uniform_int_distribution<> distrib(0, 100);
         if (distrib(gen) < 5) throw DeviceFailureException("Router ag karti arizasi!", getDeviceId());
-        
         if (firmwareVersion == "v1.0.0") reportEvent(SecurityEvent("EVT-RTR-01", "Outdated firmware detected.", EventSeverity::WARNING, getDeviceId()));
     }
 
@@ -271,7 +293,7 @@ public:
         : Device(id, ip, m), isLocked(true) {}
 
     void performSelfDiagnostic() override {
-        std::string msg = "[DIAGNOSTIC] SmartLock " + getDeviceId() + " checking mechanical integrity...\n";
+        std::string msg = " [DIAGNOSTIC] SmartLock " + getDeviceId() + " checking mechanical integrity...\n";
         std::cout << msg;
         std::random_device rd; std::mt19937 gen(rd()); std::uniform_int_distribution<> distrib(0, 100);
         if (distrib(gen) < 5) throw DeviceFailureException("Akill kilit motoru sikisti!", getDeviceId());
@@ -288,56 +310,90 @@ public:
 // 6. ANA PROGRAM (INTERAKTIF KONSOL ARAYÜZÜ - TUI)
 // =========================================================================
 
-#include <conio.h>
-#include <windows.h>
-
-// ANSI Renk Kodları (Hacker Teması)
-const std::string RESET = "\033[0m";
-const std::string GREEN = "\033[32m";
-const std::string RED = "\033[31m";
-const std::string YELLOW = "\033[33m";
-const std::string CYAN = "\033[36m";
-
-// Windows'ta ANSI renklerini aktif etme fonksiyonu
-void enableANSI() {
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hOut == INVALID_HANDLE_VALUE) return;
-    DWORD dwMode = 0;
-    if (!GetConsoleMode(hOut, &dwMode)) return;
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
-}
-
 void printASCII() {
     std::cout << CYAN;
-    std::cout << "  ___  ______ _____ _____                     _ \n";
-    std::cout << " |_  ||_   _|  __ \\  __ \\                   | |\n";
-    std::cout << "   | |  | | | |  \\/ |  \\/_   _  __ _ _ __ __| |\n";
-    std::cout << "   | |  | | | | __| | __| | | |/ _` | '__/ _` |\n";
-    std::cout << "   | | _| |_| |_\\ \\ |_\\ \\ |_| | (_| | | | (_| |\n";
-    std::cout << "   \\_/ \\___/ \\____/\\____/\\__,_|\\__,_|_|  \\__,_|\n";
+    std::cout << "  ____   _______ _____                     _ \n";
+    std::cout << " |_   _|/ |__   |  __ \\                   | |\n";
+    std::cout << "   | | ___   | || |  \\/ _   _  __ _ _ __  | |_\n";
+    std::cout << "   | |/ _ \\  | || | __ | | | |/ _` | '__| |  _|\n";
+    std::cout << "   | | (_) | | || |_\\ \\| |_| | (_| | |    | |_\n";
+    std::cout << "   \\_/\\___/  \\_/ \\____/ \\__,_|\\__,_|_|     \\__|\n";
     std::cout << RESET;
     std::cout << "====================================================\n";
-    std::cout << " Gömülü Cihaz Güvenlik Monitörü [v2.0 - C++ Edit.]\n";
+    std::cout << "   Gomulu Cihaz Guvenlik Monitoru [C++ Editon]\n";
     std::cout << "====================================================\n\n";
+}
+
+bool adminLogin() {
+    std::string user;
+    std::string pass;
+    
+    while(true) {
+        system("cls");
+        std::cout << CYAN << "====================================================\n";
+        std::cout << "          IOTGUARD YONETICI GIRIS PANELI\n";
+        std::cout << "====================================================\n" << RESET;
+        std::cout << "\n Lutfen Sisteme Giris Yapin:\n";
+        std::cout << " (Not: Varsayilan admin / 1234)\n\n";
+        
+        std::cout << " Kullanici Adi: ";
+        std::cin >> user;
+        
+        std::cout << " Sifre: ";
+        pass = "";
+        char ch;
+        while((ch = _getch()) != '\r') { // Enter'a basana kadar oku
+            if (ch == '\b') { // Backspace
+                if(pass.length() > 0) {
+                    std::cout << "\b \b";
+                    pass.pop_back();
+                }
+            } else {
+                pass.push_back(ch);
+                std::cout << "*";
+            }
+        }
+        std::cout << "\n";
+
+        if (user == "admin" && pass == "1234") {
+            std::cout << GREEN << "\n [BASARILI] Kimlik dogrulandi. Sisteme baglaniliyor...\n" << RESET;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            return true;
+        } else {
+            std::cout << RED << "\n [HATA] Kullanici adi veya sifre hatali!\n" << RESET;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+        }
+    }
+    return false;
 }
 
 int main() {
     enableANSI();
+    
+    // Giris paneli
+    if (!adminLogin()) {
+        return 0;
+    }
+
     SecurityMonitor centralMonitor;
 
     Camera frontCamera("CAM-FRONT-01", "192.168.1.10", "1080p", &centralMonitor);
     Router mainRouter("RTR-MAIN-01", "192.168.1.1", "v1.0.0", &centralMonitor);
     SmartLock frontDoorLock("LCK-DOOR-01", "192.168.1.20", &centralMonitor);
 
+    system("cls");
+    printASCII();
+    std::cout << YELLOW << " Cihazlar sisteme kaydediliyor...\n" << RESET;
     centralMonitor.registerDevice(&frontCamera);
     centralMonitor.registerDevice(&mainRouter);
     centralMonitor.registerDevice(&frontDoorLock);
+    std::cout << "\n Yukleme tamamlandi. Devam etmek icin bir tusa basin...";
+    _getch();
 
     bool isRunning = true;
 
     while (isRunning) {
-        system("cls"); // Ekranı temizle
+        system("cls");
         printASCII();
         std::cout << GREEN << " [1] " << RESET << "Sistemi Tara (Multi-Threaded)\n";
         std::cout << GREEN << " [2] " << RESET << "Cihaz Loglarini Goster\n";
@@ -345,7 +401,7 @@ int main() {
         std::cout << RED   << " [4] " << RESET << "Sistemi Kapat (Cikis)\n";
         std::cout << "\n Lutfen bir islem secin (1-4): ";
 
-        char choice = _getch(); // Kullanıcı enter'a basmadan tuşu algıla
+        char choice = _getch();
 
         switch (choice) {
             case '1': {
@@ -371,9 +427,9 @@ int main() {
             case '3': {
                 system("cls");
                 std::cout << GREEN;
-                for(int i=0; i<100; i++) {
+                for(int i=0; i<150; i++) {
                     std::cout << "01001001 01001111 01010100 01000111 01010101 01000001 01010010 01000100 ";
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 }
                 std::cout << RESET;
                 std::cout << "\n\n Simulasyon tamamlandi. Geri donmek icin tusa basin...";
@@ -382,12 +438,12 @@ int main() {
             }
             case '4': {
                 isRunning = false;
-                std::cout << RED << "\n Sistem Kapatiliyor...\n" << RESET;
+                std::cout << RED << "\n\n Sistem Kapatiliyor...\n" << RESET;
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 break;
             }
             default:
-                break; // Gecersiz tusa basildiysa menuye geri don
+                break;
         }
     }
 
