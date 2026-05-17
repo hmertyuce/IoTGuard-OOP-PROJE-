@@ -1,0 +1,40 @@
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:42:14] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:42:14] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:42:14] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:42:14] [HIGH] Device: RTR-MAIN-01 - Unusual spike in network connections detected
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:42:14] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:42:14] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
+[2026-05-17 17:42:14] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:42:14] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SYSTEM BOOT - YENI OTURUM
+=========================================
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:44:48] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:44:48] [INFO] Device: LCK-DOOR-01 - Lock secure
+[2026-05-17 17:44:48] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:44:48] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+
+=========================================
+SISTEM TARAMASI BASLATILDI
+=========================================
+[2026-05-17 17:44:48] [INFO] Device: CAM-FRONT-01 - Routine camera check passed
+[2026-05-17 17:44:48] [WARNING] Device: RTR-MAIN-01 - Outdated firmware detected. Vulnerable to exploits.
+[2026-05-17 17:44:48] [INFO] Device: RTR-MAIN-01 - Network traffic normal
+[2026-05-17 17:44:48] [CRITICAL] Device: LCK-DOOR-01 - Multiple failed unlock attempts detected! Brute force attack suspected.
