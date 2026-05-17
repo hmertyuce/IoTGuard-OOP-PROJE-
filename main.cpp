@@ -36,6 +36,30 @@ void enableANSI() {
     SetConsoleMode(hOut, dwMode);
 }
 
+// Film Tarzı Yazı Yazma Efekti (Cinematic Typing)
+void typeText(const std::string& text, int delay_ms = 20) {
+    for (char c : text) {
+        std::cout << c << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+    }
+}
+
+// Yükleme Çubuğu Animasyonu (Progress Bar)
+void showProgressBar(int duration_ms, const std::string& taskName) {
+    std::cout << YELLOW << " " << taskName << "\n [";
+    for (int i = 0; i < 40; ++i) {
+        std::cout << " ";
+    }
+    std::cout << "] 0%\r [";
+    
+    int step = duration_ms / 40;
+    for (int i = 0; i < 40; ++i) {
+        std::cout << "=" << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(step));
+    }
+    std::cout << "] 100%\n\n" << RESET;
+}
+
 // =========================================================================
 // 1. ÇEKİRDEK YAPILAR (Enums & Exceptions)
 // =========================================================================
@@ -173,6 +197,7 @@ public:
     void registerDevice(Device* device) {
         registeredDevices.push_back(device);
         std::cout << " Cihaz sisteme eklendi: " << device->getDeviceId() << "\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Cihaz ekleme efekti
     }
 
     void receiveEvent(const SecurityEvent& event) {
@@ -190,6 +215,8 @@ public:
     }
 
     void runFullSystemScan() {
+        showProgressBar(2000, "Derin Sistem Analizi Baslatiliyor...");
+        
         std::vector<std::thread> threads;
 
         for (Device* device : registeredDevices) {
@@ -222,6 +249,7 @@ public:
                 } else {
                     std::cout << GREEN << " " << ev.toString() << RESET << "\n";
                 }
+                std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Log okuma efekti
             }
         }
         std::cout << "\n Not: Tum loglar 'security_logs.txt' dosyasina da yazilmistir.\n";
@@ -336,10 +364,10 @@ bool adminLogin() {
         std::cout << "\n Lutfen Sisteme Giris Yapin:\n";
         std::cout << " (Not: Varsayilan admin / 1234)\n\n";
         
-        std::cout << " Kullanici Adi: ";
+        typeText(" Kullanici Adi: ", 10);
         std::cin >> user;
         
-        std::cout << " Sifre: ";
+        typeText(" Sifre: ", 10);
         pass = "";
         char ch;
         while((ch = _getch()) != '\r') { // Enter'a basana kadar oku
@@ -356,11 +384,15 @@ bool adminLogin() {
         std::cout << "\n";
 
         if (user == "admin" && pass == "1234") {
-            std::cout << GREEN << "\n [BASARILI] Kimlik dogrulandi. Sisteme baglaniliyor...\n" << RESET;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::cout << GREEN;
+            typeText("\n [BASARILI] Kimlik dogrulandi. Sisteme baglaniliyor...\n", 30);
+            std::cout << RESET;
+            std::this_thread::sleep_for(std::chrono::milliseconds(800));
             return true;
         } else {
-            std::cout << RED << "\n [HATA] Kullanici adi veya sifre hatali!\n" << RESET;
+            std::cout << RED;
+            typeText("\n [HATA] Kullanici adi veya sifre hatali!\n", 30);
+            std::cout << RESET;
             std::this_thread::sleep_for(std::chrono::milliseconds(1500));
         }
     }
@@ -383,10 +415,13 @@ int main() {
 
     system("cls");
     printASCII();
-    std::cout << YELLOW << " Cihazlar sisteme kaydediliyor...\n" << RESET;
+    
+    showProgressBar(1500, "Cihaz Modulleri Sisteme Entegre Ediliyor");
+    
     centralMonitor.registerDevice(&frontCamera);
     centralMonitor.registerDevice(&mainRouter);
     centralMonitor.registerDevice(&frontDoorLock);
+    
     std::cout << "\n Yukleme tamamlandi. Devam etmek icin bir tusa basin...";
     _getch();
 
@@ -427,9 +462,17 @@ int main() {
             case '3': {
                 system("cls");
                 std::cout << GREEN;
-                for(int i=0; i<150; i++) {
-                    std::cout << "01001001 01001111 01010100 01000111 01010101 01000001 01010010 01000100 ";
-                    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                std::string chars = "01001100101010100101010010101011110010";
+                std::random_device rd; std::mt19937 gen(rd());
+                std::uniform_int_distribution<> distrib(0, chars.length() - 1);
+                
+                for(int i=0; i<400; i++) {
+                    for(int j=0; j<8; j++) {
+                        std::cout << chars[distrib(gen)] << " ";
+                    }
+                    std::cout << "   ";
+                    if (i % 3 == 0) std::cout << "\n";
+                    std::this_thread::sleep_for(std::chrono::milliseconds(8));
                 }
                 std::cout << RESET;
                 std::cout << "\n\n Simulasyon tamamlandi. Geri donmek icin tusa basin...";
@@ -438,8 +481,10 @@ int main() {
             }
             case '4': {
                 isRunning = false;
-                std::cout << RED << "\n\n Sistem Kapatiliyor...\n" << RESET;
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                std::cout << RED;
+                typeText("\n\n Sistem Kapatiliyor... Gorusmek Uzere!\n", 40);
+                std::cout << RESET;
+                std::this_thread::sleep_for(std::chrono::milliseconds(600));
                 break;
             }
             default:
